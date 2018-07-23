@@ -1,0 +1,26 @@
+{
+    "name": "brnbio/laravel-crud",
+    "description": "crud generator for laravel 5",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Frank Heider",
+            "email": "info@brnb.io"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Brnbio\\LaravelCrud\\CrudServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Brnbio\\LaravelCrud\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {}
+}
