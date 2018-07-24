@@ -75,7 +75,7 @@ class ${CONTROLLER} extends Controller
     }
 
     /**
-     * @param Newsletter $${VAR}
+     * @param ${MODEL} $${VAR}
      * @return RedirectResponse
      * @throws \Exception
      */
