@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Brnbio\LaravelCrud\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 /**
  * Class CrudAll
@@ -22,12 +23,18 @@ use Illuminate\Console\Command;
  */
 class CrudAll extends Command
 {
+    public const ARGUMENT_MODEL = 'model';
+    public const OPTION_TABLE = 'table';
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'crud:all {model} {--table=}';
+    protected $signature = 'crud:all
+        {model : Name of the model}
+        {--table= : Table}
+    ';
 
     /**
      * The console command description.
@@ -43,13 +50,19 @@ class CrudAll extends Command
      */
     public function handle()
     {
+        $model = ucfirst(
+            Str::singular(
+                $this->argument(self::ARGUMENT_MODEL)
+            )
+        );
+        $controller = Str::plural($model);
 
         $this->call('crud:model', [
-            'model' => $this->argument('model'),
+            'model' => $model,
             '--table' => $this->option('table'),
         ]);
         $this->call('crud:controller', [
-            'controller' => $this->argument('model')
+            'controller' => $controller,
         ]);
     }
 }

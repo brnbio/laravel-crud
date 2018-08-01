@@ -29,12 +29,23 @@ use Illuminate\Support\Str;
  */
 class CrudModel extends Command
 {
+    public const ARGUMENT_NAME = 'name';
+
+    public const OPTION_TABLE = 'table';
+    public const OPTION_MODULE = 'module';
+
+    public const ATTRIBUTE_TABLE = 'table';
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'crud:model {model} {--table=} {--namespace=}';
+    protected $signature = 'crud:model
+        {' . self::ARGUMENT_NAME . ' : Name of the model to generate (without the Table suffix).}
+        {--' . self::OPTION_TABLE . '= : The table name to use if you have non-conventional table names.}
+        {--' . self::OPTION_MODULE . '= : Module to generate model into.}
+    ';
 
     /**
      * The console command description.
@@ -42,6 +53,13 @@ class CrudModel extends Command
      * @var string
      */
     protected $description = 'Create a model';
+
+    /**
+     * @var array
+     */
+    protected $use = [
+        'Illuminate\Database\Eloquent\Model',
+    ];
 
     /**
      * Create a new command instance.
@@ -60,7 +78,27 @@ class CrudModel extends Command
      */
     public function handle()
     {
-        $model = ucfirst(Str::camel($this->argument('model')));
+        $model = $this->getModel();
+        $fields = $this->getFields($this->getTable());
+
+        $file = view()
+            ->make('laravel-crud::model', [
+                'model' => $model,
+                'filename' => $model . '.php',
+                'namespace' => $this->getNamespace(),
+                'use' => $this->use,
+                'fields' => $fields,
+                'attributes' => [
+                    self::ATTRIBUTE_TABLE => $this->getTable(),
+                ],
+            ]);
+
+        file_put_contents(app_path('Model') . DIRECTORY_SEPARATOR . $model . '.php', "<?php\n\n" . $file->render());
+        $this->line('Model ' . $model . ' successfully created.');
+
+
+
+/*
         $data = [
             'model' => $model,
             'filename' => $model . '.php',
@@ -75,7 +113,7 @@ class CrudModel extends Command
             'methods' => [],
         ];
 
-        $modelAttributes = DB::table($tableName)->getConnection()->select('SHOW COLUMNS FROM ' . $tableName);
+
 
         foreach ($modelAttributes as $item)
         {
@@ -165,24 +203,102 @@ class CrudModel extends Command
 
         $file = new Template('laravel-crud.templates.model', $data);
 
-        file_put_contents(app_path('Model') . DIRECTORY_SEPARATOR . $data['filename'], $file->render());
-        $this->line('Model ' . $model . ' successfully created.');
+        */
+    }
+
+    /**
+     * @return string
+     */
+    private function getModel(): string
+    {
+        return ucfirst(
+            Str::camel(
+                Str::singular(
+                    $this->argument(self::ARGUMENT_NAME)
+                )
+            )
+        );
+    }
+
+    /**
+     * @return string
+     */
+    private function getTable(): string
+    {
+        if ($this->option(self::OPTION_TABLE)) {
+            return $this->option(self::OPTION_TABLE);
+        }
+
+        return strtolower(
+            Str::snake(
+                Str::plural($this->getModel())
+            )
+        );
+    }
+
+    /**
+     * @return string
+     */
+    private function getNamespace(): string
+    {
+        $module = $this->getModule();
+        if ($module) {
+            return $this->getModule() . '\\Model';
+        }
+
+        return 'App\Model';
+    }
+
+    /**
+     * @return null|string
+     */
+    private function getModule(): ?string
+    {
+        $option = $this->option(self::OPTION_MODULE);
+        if ($option) {
+            return ucfirst($option);
+        }
+
+        return null;
+    }
+
+    /**
+     * @string $table
+     * @return array
+     */
+    private function getFields(string $table): array
+    {
+        $result = [];
+        $fields = DB::table($table)->getConnection()->select('SHOW COLUMNS FROM ' . $table);
+
+        foreach ($fields as $item) {
+            $result[$item->Field] = [
+                'type' => $this->getFieldType($item->Type),
+                'nullable' => $item->Null === 'YES',
+            ];
+        }
+
+        return $result;
     }
 
     /**
      * @param string $type
      * @return string
      */
-    private function getReturnType(string $type): string
+    private function getFieldType(string $type): string
     {
-        foreach ([
-            'int' => 'int',
-            'tinyint(1)' => 'bool',
-            'datetime' => '\DateTime',
-         ] as $key => $returnType) {
-            if (strpos($type, $key) !== false) {
-                return $returnType;
-            }
+        if (strpos($type, 'int(') !== false) {
+            return 'int';
+        }
+
+        if (strpos($type, 'varchar(') !== false
+            || strpos($type, 'text') !== false) {
+            return 'string';
+        }
+
+        if ($type === 'datetime') {
+            $this->use[] = 'Carbon\Carbon';
+            return 'Carbon';
         }
 
         return 'string';

@@ -37,6 +37,8 @@ class CrudServiceProvider extends ServiceProvider
                 \Brnbio\LaravelCrud\Console\Commands\CrudAll::class,
             ]);
         }
+
+        $this->loadViewsFrom( __DIR__ . '/Templates', 'laravel-crud');
     }
 
     /**
@@ -47,11 +49,5 @@ class CrudServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__. ' /../config/laravel-crud.php', 'laravel-crud');
-        $this->mergeConfigFrom(__DIR__. ' /../config/laravel-crud/model.php', 'laravel-crud.templates.model');
-        $this->mergeConfigFrom(__DIR__. ' /../config/laravel-crud/controller.php', 'laravel-crud.templates.controller');
-        $this->mergeConfigFrom(__DIR__. ' /../config/laravel-crud/file_header.php', 'laravel-crud.templates.file-header');
-        $this->mergeConfigFrom(__DIR__. ' /../config/laravel-crud/methods_getter.php', 'laravel-crud.templates.methods.getter');
-        $this->mergeConfigFrom(__DIR__. ' /../config/laravel-crud/methods_setter.php', 'laravel-crud.templates.methods.setter');
-        $this->mergeConfigFrom(__DIR__. ' /../config/laravel-crud/methods_belongsto.php', 'laravel-crud.templates.methods.belongsTo');
     }
 }
