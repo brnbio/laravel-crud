@@ -72,6 +72,7 @@ class GenerateModelCommand extends GeneratorCommand
     }
 
     /**
+     * TODO:
      * @return void
      */
     protected function createFactory()
@@ -85,28 +86,24 @@ class GenerateModelCommand extends GeneratorCommand
     }
 
     /**
-     * Create a migration file for the model.
-     *
      * @return void
      */
-    protected function createMigration()
+    protected function createMigration(): void
     {
-        $table = Str::snake(Str::pluralStudly(class_basename($this->argument('name'))));
-
+        $table = $this->option('table');
         if ($this->option('pivot')) {
             $table = Str::singular($table);
         }
 
-        $this->call('make:migration', [
+        $this->call('generate:migration', [
             'name' => "create_{$table}_table",
             '--create' => $table,
-            '--fullpath' => true,
+            '--attributes' => $this->option('attributes')
         ]);
     }
 
     /**
-     * Create a seeder file for the model.
-     *
+     * TODO:
      * @return void
      */
     protected function createSeeder()
@@ -252,7 +249,11 @@ class GenerateModelCommand extends GeneratorCommand
         $properties = [];
 
         foreach ($this->getAttributes() as $attribute) {
-            $properties[] = ' * @property ' . $attribute['type'] . ($attribute['nullable'] ? '|null' : '') . ' $' . $attribute['name'];
+            $properties[] = ' * @property ' . $attribute['attributeType'] . ($attribute['nullable'] ? '|null' : '') . ' $' . $attribute['name'];
+            if ($attribute['type'] === 'foreignId') {
+                $foreign = str($attribute['name'])->replace('_id', '')->camel()->__toString();
+                $properties[] = ' * @property ' . ucfirst($foreign) . ($attribute['nullable'] ? '|null' : '') . ' $' . $foreign;
+            }
         }
 
         return implode(PHP_EOL, $properties);
