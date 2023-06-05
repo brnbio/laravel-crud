@@ -259,46 +259,6 @@ class GenerateModelCommand extends GeneratorCommand
     }
 
     /**
-     * @return array
-     */
-    protected function getAttributes(): array
-    {
-        $attributes = [];
-        foreach (explode(',', $this->option('attributes') ?? '') as $attribute) {
-            $attributes[] = $this->buildAttribute($attribute);
-        }
-
-        return $attributes;
-    }
-
-    /**
-     * @param mixed $attribute
-     * @return array
-     */
-    protected function buildAttribute(string $attribute): array
-    {
-        $attribute = explode(':', $attribute);
-
-        return [
-            'name' => $attribute[0],
-            'type' => $this->getType($attribute[1] ?? 'string'),
-            'nullable' => $attribute[2] ?? false,
-        ];
-    }
-
-    /**
-     * @param string $type
-     * @return string
-     */
-    protected function getType(string $type): string
-    {
-        return match ($type) {
-            'date', 'datetime', 'time' => 'Carbon',
-            default => 'string',
-        };
-    }
-
-    /**
      * @return string
      */
     private function buildAttributes(): string
@@ -316,11 +276,11 @@ class GenerateModelCommand extends GeneratorCommand
      */
     private function buildFillable(): string
     {
-        $attributes = [];
+        $fillable = [];
         foreach ($this->getAttributes() as $attribute) {
-            $attributes[] = 'self::ATTRIBUTE_' . strtoupper($attribute['name']) . ',';
+            $fillable[] = 'self::ATTRIBUTE_' . strtoupper($attribute['name']) . ',';
         }
 
-        return implode(PHP_EOL . "\t\t", $attributes);
+        return implode(PHP_EOL . "\t\t", $fillable);
     }
 }
