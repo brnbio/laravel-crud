@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use App\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
+
+/**
+ * Class {{ class }}
+ *
+ * @package {{ namespace }}
+{{ properties }}
+ */
+class {{ class }} extends Model
+{
+    use HasFactory;
+
+    public const TABLE = '{{ tableName }}';
+
+    {{ attributes }}
+
+    /**
+     * @var string[]
+     */
+    protected $fillable = [
+        {{ fillable }}
+    ];
+}

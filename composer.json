@@ -1,0 +1,25 @@
+{
+    "name": "brnbio/laravel-crud",
+    "description": "Custom code generator",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Frank Heider",
+            "email": "support@brainbo-webdesign.de"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Brnbio\\LaravelCrud\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Brnbio\\LaravelCrud\\LaravelCrudServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev"
+}
