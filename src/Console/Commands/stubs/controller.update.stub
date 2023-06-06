@@ -6,7 +6,7 @@ namespace {{ namespace }};
 
 use App\Controller;
 use {{ namespacedModel }};
-use {{ namespacedStoreRequest }};
+use {{ namespacedUpdateRequest }};
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
 
@@ -18,20 +18,22 @@ use Inertia\Response;
 class {{ class }} extends Controller
 {
     /**
+     * @param {{ model }} ${{ modelVariable }}
      * @return Response
      */
-    public function __invoke(): Response
+    public function __invoke({{ model }} ${{ modelVariable }}): Response
     {
-        return inertia('{{ modelVariablePlural }}.create');
+        return inertia('{{ modelVariablePlural }}.update', compact('{{ modelVariable }}'));
     }
 
     /**
-     * @param StoreRequest $request
+     * @param UpdateRequest $request
+     * @param {{ model }} ${{ modelVariable }}
      * @return RedirectResponse
      */
-    public function store(StoreRequest $request): RedirectResponse
+    public function store(UpdateRequest $request, {{ model }} ${{ modelVariable }}): RedirectResponse
     {
-        ${{ modelVariable }} = {{ model }}::create($request->validated());
+        ${{ modelVariable }}->update($request->validated());
         flash()->success('{{ model }} gespeichert.');
 
         return to_route('{{ modelVariablePlural }}.details', compact('{{ modelVariable }}'));

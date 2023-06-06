@@ -203,13 +203,19 @@ class GenerateControllerCommand extends GeneratorCommand
         $storeRequestClass = '';
         if ($this->option('type') === 'create') {
             $storeRequestClass = Str::plural(class_basename($modelClass)) . '\StoreRequest';
-            $this->call('make:request', ['name' => $storeRequestClass]);
+            $this->call('make:request', [
+                'name' => $storeRequestClass,
+                '--force' => $this->option('force')
+            ]);
         }
 
         $updateRequestClass = '';
         if ($this->option('type') === 'update') {
             $updateRequestClass = Str::plural(class_basename($modelClass)) . '\UpdateRequest';
-            $this->call('make:request', ['name' => $updateRequestClass]);
+            $this->call('make:request', [
+                'name' => $updateRequestClass,
+                '--force' => $this->option('force')
+            ]);
         }
 
         return array_merge($replace, [
