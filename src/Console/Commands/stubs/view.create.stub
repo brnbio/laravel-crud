@@ -1,0 +1,21 @@
+<script setup>
+
+const form = useForm({
+
+});
+provide('form');
+
+function submit() {
+    form.submit(route('{{ modelVariablePlural }}.create'));
+}
+
+</script>
+<template>
+
+    <Layout>
+        <form @submit.prevent="submit">
+            <FormControl />
+        </form>
+    </Layout>
+
+</template>

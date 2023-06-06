@@ -1,0 +1,17 @@
+<script setup>
+
+const props = defineProps({
+    {{ modelVariablePlural }}: {
+        type: Object,
+        required: true,
+    }
+});
+
+</script>
+<template>
+
+    <Layout>
+
+    </Layout>
+
+</template>

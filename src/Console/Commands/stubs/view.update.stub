@@ -1,0 +1,28 @@
+<script setup>
+
+const props = defineProps({
+    {{ modelVariable }}: {
+        type: Object,
+        required: true,
+    }
+});
+
+const form = useForm({
+
+});
+provide('form');
+
+function submit() {
+    form.submit(route('{{ modelVariablePlural }}.update', props.{{ modelVariable }}));
+}
+
+</script>
+<template>
+
+    <Layout>
+        <form @submit.prevent="submit">
+            <FormControl />
+        </form>
+    </Layout>
+
+</template>
