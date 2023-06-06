@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use App\Controller;
+use {{ namespacedModel }};
+use Inertia\Response;
+
+/**
+ * Class {{ class }}
+ *
+ * @package {{ namespace }}
+ */
+class {{ class }} extends Controller
+{
+    /**
+     * @return Response
+     */
+    public function __invoke(): Response
+    {
+        ${{ modelVariablePlural }} = {{ model }}::query()->paginate();
+
+        return inertia('{{ modelVariablePlural }}.index', compact('{{ modelVariablePlural }}'));
+    }
+
+    /**
+     * @param {{ model }} ${{ modelVariable }}
+     * @return Response
+     */
+    public function details({{ model }} ${{ modelVariable }}): Response
+    {
+        return inertia('{{ modelVariablePlural }}.details', compact('{{ modelVariable }}'));
+    }
+}
