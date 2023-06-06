@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Brnbio\LaravelCrud\Console\Commands;
 
 use Brnbio\LaravelCrud\GeneratorCommand;
+use Brnbio\LaravelCrud\Traits\HasOptionAttributes;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,6 +17,8 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class GenerateModelCommand extends GeneratorCommand
 {
+    use HasOptionAttributes;
+
     /**
      * @var string
      */
@@ -60,10 +63,6 @@ class GenerateModelCommand extends GeneratorCommand
 
         if ($this->option('seed')) {
             $this->createSeeder();
-        }
-
-        if ($this->option('controller') || $this->option('resource') || $this->option('api')) {
-            $this->createController();
         }
 
         if ($this->option('policy')) {
@@ -113,25 +112,6 @@ class GenerateModelCommand extends GeneratorCommand
         $this->call('make:seeder', [
             'name' => "{$seeder}Seeder",
         ]);
-    }
-
-    /**
-     * Create a controller for the model.
-     *
-     * @return void
-     */
-    protected function createController()
-    {
-        $controller = Str::studly(class_basename($this->argument('name')));
-
-        $modelName = $this->qualifyClass($this->getNameInput());
-
-        $this->call('make:controller', array_filter([
-            'name' => "{$controller}Controller",
-            '--model' => $this->option('resource') || $this->option('api') ? $modelName : null,
-            '--api' => $this->option('api'),
-            '--requests' => $this->option('requests') || $this->option('all'),
-        ]));
     }
 
     /**

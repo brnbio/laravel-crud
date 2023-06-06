@@ -36,6 +36,6 @@ class {{ class }} extends Controller
         ${{ modelVariable }}->update($request->validated());
         flash()->success('{{ model }} gespeichert.');
 
-        return to_route('{{ modelVariablePlural }}.details', compact('{{ modelVariable }}'));
+        return to_route('{{ modelVariablePlural }}/details', compact('{{ modelVariable }}'));
     }
 }

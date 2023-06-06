@@ -41,6 +41,7 @@ class GenerateCommand extends Command
         $this->call('generate:model', [
             'name' => $model,
             '--migration' => true,
+            '--attributes' => $this->option('attributes'),
             '--table' => $this->option('table'),
             '--force' => $this->option('force')
         ]);
@@ -48,6 +49,7 @@ class GenerateCommand extends Command
         foreach (['create', 'read', 'update', 'delete'] as $action) {
             $this->call('generate:controller', [
                 'name' => $modelPlural . '/' . ucfirst($action) . 'Controller',
+                '--model' => $model,
                 '--type' => $action,
                 '--force' => $this->option('force')
             ]);
@@ -56,8 +58,9 @@ class GenerateCommand extends Command
         foreach (['index', 'details', 'create', 'update'] as $action) {
             $this->call('generate:view', [
                 'name' => strtolower($modelPlural) . '/' . $action,
-                '--path' => 'resources/js/views',
+                '--model' => $model,
                 '--type' => $action,
+                '--path' => 'resources/js/views',
                 '--force' => $this->option('force')
             ]);
         }

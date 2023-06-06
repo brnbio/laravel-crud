@@ -22,7 +22,7 @@ class {{ class }} extends Controller
     {
         ${{ modelVariablePlural }} = {{ model }}::query()->paginate();
 
-        return inertia('{{ modelVariablePlural }}.index', compact('{{ modelVariablePlural }}'));
+        return inertia('{{ modelVariablePlural }}/index', compact('{{ modelVariablePlural }}'));
     }
 
     /**
@@ -31,6 +31,6 @@ class {{ class }} extends Controller
      */
     public function details({{ model }} ${{ modelVariable }}): Response
     {
-        return inertia('{{ modelVariablePlural }}.details', compact('{{ modelVariable }}'));
+        return inertia('{{ modelVariablePlural }}/details', compact('{{ modelVariable }}'));
     }
 }
