@@ -196,63 +196,28 @@ class GenerateControllerCommand extends GeneratorCommand
      * @param string $modelClass
      * @return array
      */
-    protected function buildFormRequestReplacements(array $replace, $modelClass)
+    protected function buildFormRequestReplacements(array $replace, string $modelClass): array
     {
-        [$namespace, $storeRequestClass, $updateRequestClass] = [
-            'Illuminate\\Http', 'Request', 'Request',
-        ];
+        $namespace = $this->rootNamespace() . 'Http\Requests';
 
-        if ($this->option('requests')) {
-            $namespace = 'App\\Http\\Requests';
-
-            [$storeRequestClass, $updateRequestClass] = $this->generateFormRequests(
-                $modelClass, $storeRequestClass, $updateRequestClass
-            );
+        $storeRequestClass = '';
+        if ($this->option('type') === 'create') {
+            $storeRequestClass = Str::plural(class_basename($modelClass)) . '\StoreRequest';
+            $this->call('make:request', ['name' => $storeRequestClass]);
         }
 
-        $namespacedRequests = $namespace . '\\' . $storeRequestClass . ';';
-
-        if ($storeRequestClass !== $updateRequestClass) {
-            $namespacedRequests .= PHP_EOL . 'use ' . $namespace . '\\' . $updateRequestClass . ';';
+        $updateRequestClass = '';
+        if ($this->option('type') === 'update') {
+            $updateRequestClass = Str::plural(class_basename($modelClass)) . '\UpdateRequest';
+            $this->call('make:request', ['name' => $updateRequestClass]);
         }
 
         return array_merge($replace, [
             '{{ storeRequest }}' => $storeRequestClass,
-            '{{storeRequest}}' => $storeRequestClass,
             '{{ updateRequest }}' => $updateRequestClass,
-            '{{updateRequest}}' => $updateRequestClass,
             '{{ namespacedStoreRequest }}' => $namespace . '\\' . $storeRequestClass,
-            '{{namespacedStoreRequest}}' => $namespace . '\\' . $storeRequestClass,
-            '{{ namespacedUpdateRequest }}' => $namespace . '\\' . $updateRequestClass,
-            '{{namespacedUpdateRequest}}' => $namespace . '\\' . $updateRequestClass,
-            '{{ namespacedRequests }}' => $namespacedRequests,
-            '{{namespacedRequests}}' => $namespacedRequests,
+            '{{ namespacedUpdateRequest }}' => $namespace . '\\' . $updateRequestClass
         ]);
-    }
-
-    /**
-     * Generate the form requests for the given model and classes.
-     *
-     * @param string $modelClass
-     * @param string $storeRequestClass
-     * @param string $updateRequestClass
-     * @return array
-     */
-    protected function generateFormRequests($modelClass, $storeRequestClass, $updateRequestClass)
-    {
-        $storeRequestClass = 'Store' . class_basename($modelClass) . 'Request';
-
-        $this->call('make:request', [
-            'name' => $storeRequestClass,
-        ]);
-
-        $updateRequestClass = 'Update' . class_basename($modelClass) . 'Request';
-
-        $this->call('make:request', [
-            'name' => $updateRequestClass,
-        ]);
-
-        return [$storeRequestClass, $updateRequestClass];
     }
 
     /**
