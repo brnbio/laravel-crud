@@ -1,7 +1,12 @@
 <script setup>
 
-const form = useForm({
+import { useForm } from '@inertiajs/inertia-vue3';
+import { provide } from 'vue';
+import FormControl from '~/components/forms/form-control';
+import Layout from '~/layout/app';
 
+const form = useForm({
+    //
 });
 provide('form');
 
