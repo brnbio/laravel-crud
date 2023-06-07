@@ -44,17 +44,8 @@ class GenerateModelCommand extends GeneratorCommand
             return false;
         }
 
-        if ($this->option('all')) {
-            $this->input->setOption('factory', true);
-            $this->input->setOption('seed', true);
-            $this->input->setOption('migration', true);
-            $this->input->setOption('controller', true);
-            $this->input->setOption('policy', true);
-            $this->input->setOption('resource', true);
-        }
-
         if ($this->option('factory')) {
-            $this->createFactory();
+//            $this->createFactory();
         }
 
         if ($this->option('migration')) {
@@ -62,11 +53,7 @@ class GenerateModelCommand extends GeneratorCommand
         }
 
         if ($this->option('seed')) {
-            $this->createSeeder();
-        }
-
-        if ($this->option('policy')) {
-            $this->createPolicy();
+//            $this->createSeeder();
         }
     }
 
@@ -90,9 +77,6 @@ class GenerateModelCommand extends GeneratorCommand
     protected function createMigration(): void
     {
         $table = $this->option('table');
-        if ($this->option('pivot')) {
-            $table = Str::singular($table);
-        }
 
         $this->call('generate:migration', [
             'name' => "create_{$table}_table",
@@ -115,57 +99,11 @@ class GenerateModelCommand extends GeneratorCommand
     }
 
     /**
-     * Create a policy file for the model.
-     *
-     * @return void
-     */
-    protected function createPolicy()
-    {
-        $policy = Str::studly(class_basename($this->argument('name')));
-
-        $this->call('make:policy', [
-            'name' => "{$policy}Policy",
-            '--model' => $this->qualifyClass($this->getNameInput()),
-        ]);
-    }
-
-    /**
      * @return string
      */
     protected function getStub(): string
     {
-        if ($this->option('pivot')) {
-            return $this->resolveStubPath('model.pivot.stub');
-        }
-
-        if ($this->option('morph-pivot')) {
-            return $this->resolveStubPath('model.morph-pivot.stub');
-        }
-
-        return $this->resolveStubPath('model.stub');
-    }
-
-    /**
-     * @param string $stub
-     * @return string
-     */
-    protected function resolveStubPath($stub): string
-    {
-        $customPath = '/stubs/' . $this->laravel->basePath(trim($stub, '/'));
-
-        return file_exists($customPath) ? $customPath : __DIR__ . '/stubs/' . $stub;
-    }
-
-    /**
-     * @return string
-     */
-    protected function rootNamespace(): string
-    {
-        if (!empty($customNamespace = $this->option('namespace'))) {
-            return explode('\\', $customNamespace)[0];
-        }
-
-        return parent::rootNamespace();
+        return $this->resolveStubPath('/stubs/model.stub');
     }
 
     /**
@@ -183,20 +121,12 @@ class GenerateModelCommand extends GeneratorCommand
     protected function getOptions(): array
     {
         return [
-            ['all', 'a', InputOption::VALUE_NONE, 'Generate a migration, seeder, factory, policy, resource controller, and form request classes for the model'],
-            ['api', null, InputOption::VALUE_NONE, 'Indicates if the generated controller should be an API resource controller'],
             ['attributes', null, InputOption::VALUE_OPTIONAL, 'The attributes of the model'],
-            ['controller', 'c', InputOption::VALUE_NONE, 'Create a new controller for the model'],
             ['factory', 'f', InputOption::VALUE_NONE, 'Create a new factory for the model'],
             ['force', null, InputOption::VALUE_NONE, 'Create the class even if the model already exists'],
             ['migration', 'm', InputOption::VALUE_NONE, 'Create a new migration file for the model'],
-            ['morph-pivot', null, InputOption::VALUE_NONE, 'Indicates if the generated model should be a custom polymorphic intermediate table model'],
             ['namespace', null, InputOption::VALUE_OPTIONAL, 'The root namespace for the model'],
             ['path', null, InputOption::VALUE_OPTIONAL, 'The location where the model file should be created'],
-            ['pivot', 'p', InputOption::VALUE_NONE, 'Indicates if the generated model should be a custom intermediate table model'],
-            ['policy', null, InputOption::VALUE_NONE, 'Create a new policy for the model'],
-            ['requests', 'R', InputOption::VALUE_NONE, 'Create new form request classes and use them in the resource controller'],
-            ['resource', 'r', InputOption::VALUE_NONE, 'Indicates if the generated controller should be a resource controller'],
             ['seed', 's', InputOption::VALUE_NONE, 'Create a new seeder for the model'],
             ['table', 't', InputOption::VALUE_OPTIONAL, 'The table to be created'],
         ];

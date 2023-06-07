@@ -66,17 +66,6 @@ class GenerateControllerCommand extends GeneratorCommand
     }
 
     /**
-     * @param string $stub
-     * @return string
-     */
-    protected function resolveStubPath(string $stub): string
-    {
-        $customPath = $this->laravel->basePath(trim($stub, '/'));
-
-        return file_exists($customPath) ? $customPath : __DIR__ . $stub;
-    }
-
-    /**
      * @param string $rootNamespace
      * @return string
      */
@@ -199,24 +188,8 @@ class GenerateControllerCommand extends GeneratorCommand
     protected function buildFormRequestReplacements(array $replace, string $modelClass): array
     {
         $namespace = $this->rootNamespace() . 'Http\Requests';
-
-        $storeRequestClass = '';
-        if ($this->option('type') === 'create') {
-            $storeRequestClass = Str::plural(class_basename($modelClass)) . '\StoreRequest';
-            $this->call('make:request', [
-                'name' => $storeRequestClass,
-                '--force' => $this->option('force')
-            ]);
-        }
-
-        $updateRequestClass = '';
-        if ($this->option('type') === 'update') {
-            $updateRequestClass = Str::plural(class_basename($modelClass)) . '\UpdateRequest';
-            $this->call('make:request', [
-                'name' => $updateRequestClass,
-                '--force' => $this->option('force')
-            ]);
-        }
+        $storeRequestClass = Str::plural(class_basename($modelClass)) . '\StoreRequest';
+        $updateRequestClass = Str::plural(class_basename($modelClass)) . '\UpdateRequest';
 
         return array_merge($replace, [
             '{{ storeRequest }}' => $storeRequestClass,
@@ -245,17 +218,5 @@ class GenerateControllerCommand extends GeneratorCommand
             ['singleton', 's', InputOption::VALUE_NONE, 'Generate a singleton resource controller class'],
             ['type', null, InputOption::VALUE_REQUIRED, 'Manually specify the controller stub file to use'],
         ];
-    }
-
-    /**
-     * @return string
-     */
-    protected function rootNamespace(): string
-    {
-        if (!empty($customNamespace = $this->option('namespace'))) {
-            return explode('\\', $customNamespace)[0];
-        }
-
-        return parent::rootNamespace();
     }
 }

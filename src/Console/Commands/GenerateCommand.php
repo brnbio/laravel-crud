@@ -46,6 +46,16 @@ class GenerateCommand extends Command
             '--force' => $this->option('force')
         ]);
 
+        foreach (['store', 'update'] as $action) {
+            $requestClass = $modelPlural . '\\' . ucfirst($action) . 'Request';
+            $this->call('generate:request', [
+                'name' => $requestClass,
+                '--model' => $model,
+                '--attributes' => $this->option('attributes'),
+                '--force' => $this->option('force')
+            ]);
+        }
+
         foreach (['create', 'read', 'update', 'delete'] as $action) {
             $this->call('generate:controller', [
                 'name' => $modelPlural . '/' . ucfirst($action) . 'Controller',

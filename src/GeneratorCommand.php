@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Brnbio\LaravelCrud;
 
-use Brnbio\LaravelCrud\Traits\HasOptionAttributes;
 use Illuminate\Console\GeneratorCommand as Command;
 
 /**
@@ -14,5 +13,30 @@ use Illuminate\Console\GeneratorCommand as Command;
  */
 abstract class GeneratorCommand extends Command
 {
-    use HasOptionAttributes;
+    /**
+     * @param $stub
+     * @return string
+     */
+    protected function resolveStubPath($stub): string
+    {
+        $customPath = $this->laravel->basePath(trim($stub, '/'));
+
+        if (file_exists($customPath)) {
+            return $customPath;
+        }
+
+        return __DIR__ . $stub;
+    }
+
+    /**
+     * @return string
+     */
+    protected function rootNamespace(): string
+    {
+        if ($this->hasOption('namespace') && !empty($customNamespace = $this->option('namespace'))) {
+            return explode('\\', $customNamespace)[0];
+        }
+
+        return parent::rootNamespace();
+    }
 }

@@ -40,9 +40,8 @@ class GenerateViewCommand extends GeneratorCommand
         if ($type = $this->option('type')) {
             $stub = '/stubs/view.' . $type . '.stub';
         }
-        $customPath = $this->laravel->basePath(trim($stub, '/'));
 
-        return file_exists($customPath) ? $customPath : __DIR__ . $stub;
+        return $this->resolveStubPath($stub);
     }
 
     /**

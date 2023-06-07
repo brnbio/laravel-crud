@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use Illuminate\Foundation\Http\FormRequest;
+
+/**
+ * Class {{ class }}
+ *
+ * @package {{ namespace }}
+ */
+class {{ class }} extends FormRequest
+{
+    /**
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            {{ rules }}
+        ];
+    }
+}

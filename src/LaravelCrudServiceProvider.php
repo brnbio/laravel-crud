@@ -8,6 +8,7 @@ use Brnbio\LaravelCrud\Console\Commands\GenerateCommand;
 use Brnbio\LaravelCrud\Console\Commands\GenerateControllerCommand;
 use Brnbio\LaravelCrud\Console\Commands\GenerateMigrationCommand;
 use Brnbio\LaravelCrud\Console\Commands\GenerateModelCommand;
+use Brnbio\LaravelCrud\Console\Commands\GenerateRequestCommand;
 use Brnbio\LaravelCrud\Console\Commands\GenerateViewCommand;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,6 +32,7 @@ class LaravelCrudServiceProvider extends ServiceProvider
             GenerateModelCommand::class,
             GenerateMigrationCommand::class,
             GenerateControllerCommand::class,
+            GenerateRequestCommand::class,
             GenerateViewCommand::class,
             GenerateCommand::class,
         ]);
