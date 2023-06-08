@@ -8,7 +8,7 @@ import Layout from '~/layout/app';
 const form = useForm({
     {{ data }}
 });
-provide('form');
+provide('form', form);
 
 function submit() {
     form.submit(route('{{ modelVariablePlural }}.create'));
@@ -19,7 +19,10 @@ function submit() {
 
     <Layout>
         <form @submit.prevent="submit">
-            <FormControl />
+            {{ elements }}
+            <button :disabled="form.processing">
+                Save
+            </button>
         </form>
     </Layout>
 

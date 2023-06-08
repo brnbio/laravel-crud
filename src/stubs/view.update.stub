@@ -15,7 +15,7 @@ const props = defineProps({
 const form = useForm({
     {{ data }}
 });
-provide('form');
+provide('form', form);
 
 function submit() {
     form.submit(route('{{ modelVariablePlural }}.update', props.{{ modelVariable }}));
@@ -26,8 +26,8 @@ function submit() {
 
     <Layout>
         <form @submit.prevent="submit">
-            <FormControl />
-            <button class="btn btn-primary" :disabled="form.processing">
+            {{ elements }}
+            <button :disabled="form.processing">
                 Save
             </button>
         </form>

@@ -85,7 +85,8 @@ class GenerateViewCommand extends GeneratorCommand
         $replace = parent::getReplaceItems($name);
 
         return array_merge($replace, [
-            'data' => $this->buildData($replace['modelVariable']),
+            'data'     => $this->buildData($replace['modelVariable']),
+            'elements' => $this->buildElements(),
         ]);
     }
 
@@ -105,5 +106,23 @@ class GenerateViewCommand extends GeneratorCommand
         }
 
         return implode(PHP_EOL . '    ', $data);
+    }
+
+    /**
+     * @return string
+     */
+    protected function buildElements(): string
+    {
+        $elements = [];
+        foreach ($this->getAttributes() as $attribute) {
+            $elements[] = sprintf(
+                '<FormControl name="%s" label="%s"%s />',
+                $attribute['name'],
+                ucfirst($attribute['name']),
+                $attribute['nullable'] ? '' : ' required'
+            );
+        }
+
+        return implode(PHP_EOL . str_repeat(' ', 12), $elements);
     }
 }
