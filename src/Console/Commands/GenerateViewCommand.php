@@ -75,4 +75,35 @@ class GenerateViewCommand extends GeneratorCommand
             str_replace('\\', '/', $name) . '.vue',
         ]);
     }
+
+    /**
+     * @param string $name
+     * @return array
+     */
+    protected function getReplaceItems(string $name): array
+    {
+        $replace = parent::getReplaceItems($name);
+
+        return array_merge($replace, [
+            'data' => $this->buildData($replace['modelVariable']),
+        ]);
+    }
+
+    /**
+     * @param string $modelVariable
+     * @return string
+     */
+    protected function buildData(string $modelVariable): string
+    {
+        $data = [];
+        foreach ($this->getAttributes() as $attribute) {
+            $value = 'null';
+            if ($this->option('type') === 'update') {
+                $value = 'props.' . $modelVariable . '.' . $attribute['name'];
+            }
+            $data[] = $attribute['name'] . ': ' . $value . ',';
+        }
+
+        return implode(PHP_EOL . '    ', $data);
+    }
 }

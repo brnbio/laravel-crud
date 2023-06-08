@@ -6,7 +6,7 @@ import FormControl from '~/components/forms/form-control';
 import Layout from '~/layout/app';
 
 const form = useForm({
-    //
+    {{ data }}
 });
 provide('form');
 

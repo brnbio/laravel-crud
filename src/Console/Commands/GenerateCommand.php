@@ -68,6 +68,7 @@ class GenerateCommand extends Command
         foreach (['index', 'details', 'create', 'update'] as $action) {
             $this->call('generate:view', [
                 'name' => strtolower($modelPlural) . '/' . $action,
+                '--attributes' => $this->option('attributes'),
                 '--model' => $model,
                 '--type' => $action,
                 '--path' => 'resources/js/views',

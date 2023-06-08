@@ -15,7 +15,7 @@ trait HasOptionAttributes
     protected function getAttributes(): array
     {
         $attributes = [];
-        if ($this->hasOption('attributes')) {
+        if ($this->hasOption('attributes') && !empty($this->option('attributes'))) {
             foreach (explode(',', $this->option('attributes') ?? '') as $attribute) {
                 $attributes[] = $this->getAttribute($attribute);
             }
