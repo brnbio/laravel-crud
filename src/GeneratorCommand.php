@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Brnbio\LaravelCrud;
 
 use Illuminate\Console\GeneratorCommand as Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Str;
+use Illuminate\Support\Traits\Macroable;
 
 /**
  * Class GeneratorCommand
@@ -13,12 +16,15 @@ use Illuminate\Console\GeneratorCommand as Command;
  */
 abstract class GeneratorCommand extends Command
 {
+    use Macroable;
+
     /**
-     * @param $stub
+     * @param string $stub
      * @return string
      */
-    protected function resolveStubPath($stub): string
+    protected function resolveStubPath(string $stub): string
     {
+        $stub = '/stubs/' . $stub;
         $customPath = $this->laravel->basePath(trim($stub, '/'));
 
         if (file_exists($customPath)) {
@@ -38,5 +44,51 @@ abstract class GeneratorCommand extends Command
         }
 
         return parent::rootNamespace();
+    }
+
+    /**
+     * @param string $name
+     * @return array
+     */
+    protected function getReplaceItems(string $name): array
+    {
+        $class = str_replace($this->getNamespace($name) . '\\', '', $name);
+        $modelClass = $this->qualifyModel($this->option('model'));
+
+        return [
+            'namespace' => $this->getNamespace($name),
+            'rootNamespace' => $this->rootNamespace(),
+            'class' => $class,
+            'namespacedModel' => $modelClass,
+            'model' => class_basename($modelClass),
+            'modelVariable' => lcfirst(class_basename($modelClass)),
+            'modelVariablePlural' => lcfirst(Str::plural(class_basename($modelClass))),
+        ];
+    }
+
+    /**
+     * @param string $stub
+     * @param string $name
+     * @return string
+     */
+    protected function replace(string $stub, string $name): string
+    {
+        foreach ($this->getReplaceItems($name) as $search => $replace) {
+            $stub = str_replace('{{ ' . $search . ' }}', $replace, $stub);
+        }
+
+        return $stub;
+    }
+
+    /**
+     * @param $name
+     * @return string
+     * @throws FileNotFoundException
+     */
+    protected function buildClass($name): string
+    {
+        $stub = $this->files->get($this->getStub());
+
+        return $this->replace($stub, $name);
     }
 }

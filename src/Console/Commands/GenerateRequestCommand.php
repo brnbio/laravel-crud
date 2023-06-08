@@ -6,7 +6,6 @@ namespace Brnbio\LaravelCrud\Console\Commands;
 
 use Brnbio\LaravelCrud\GeneratorCommand;
 use Brnbio\LaravelCrud\Traits\HasOptionAttributes;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -34,23 +33,6 @@ class GenerateRequestCommand extends GeneratorCommand
     protected $type = 'Request';
 
     /**
-     * @return string
-     */
-    protected function getStub(): string
-    {
-        return $this->resolveStubPath('/stubs/request.stub');
-    }
-
-    /**
-     * @param string $rootNamespace
-     * @return string
-     */
-    protected function getDefaultNamespace($rootNamespace): string
-    {
-        return $rootNamespace . '\Http\Requests';
-    }
-
-    /**
      * @return array
      */
     protected function getOptions(): array
@@ -65,27 +47,47 @@ class GenerateRequestCommand extends GeneratorCommand
     }
 
     /**
-     * @param $name
      * @return string
-     * @throws FileNotFoundException
      */
-    protected function buildClass($name): string
+    protected function getStub(): string
     {
-        $stub = $this->files->get($this->getStub());
-        $modelClass = $this->qualifyModel($this->option('model'));
-        $stub = str_replace('{{ namespacedModel }}', $modelClass, $stub);
+        return $this->resolveStubPath('request.stub');
+    }
 
-        return $this
-            ->replaceRules($stub)
-            ->replaceNamespace($stub, $name)
-            ->replaceClass($stub, $name);
+    /**
+     * @param string $rootNamespace
+     * @return string
+     */
+    protected function getDefaultNamespace($rootNamespace): string
+    {
+        return $rootNamespace . '\Http\Requests';
+    }
+
+    /**
+     * @param string $name
+     * @return array
+     */
+    protected function getReplaceItems(string $name): array
+    {
+        $items = [
+            'rules' => $this->replaceRules($name)
+        ];
+
+        if (self::hasMacro('updateReplace')) {
+            $items = array_merge(
+                $items,
+                self::updateReplace($items, $this->arguments(), $this->options())
+            );
+        }
+
+        return array_merge(parent::getReplaceItems($name), $items);
     }
 
     /**
      * @param string $stub
-     * @return self
+     * @return string
      */
-    protected function replaceRules(string &$stub): self
+    protected function replaceRules(string $stub): string
     {
         $rules = [];
         foreach ($this->getAttributes() as $attribute) {
@@ -96,16 +98,15 @@ class GenerateRequestCommand extends GeneratorCommand
             if ($attribute['type'] === 'string') {
                 $attributeRules[] = 'max:255';
             }
-            $attributeRules = implode("',\n\t\t\t\t'", $attributeRules);
+            $attributeRules = implode("',\n                '", $attributeRules);
             $rules[] = sprintf(
-                "%s => [\n\t\t\t\t'%s',\n\t\t\t],",
+                "%s => [\n                '%s',\n            ],",
                 $this->option('model') . '::ATTRIBUTE_' . strtoupper($attribute['name']),
                 $attributeRules
             );
         }
-        $stub = str_replace('{{ rules }}', implode("\n            ", $rules), $stub);
 
-        return $this;
+        return implode("\n            ", $rules);
     }
 
     /**
