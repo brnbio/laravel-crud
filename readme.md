@@ -118,7 +118,42 @@ Schema::create('teams', function (Blueprint $table) {
 
 #### Generate controller
 
-tbd
+In addition to the basic replacements, the following replacements are available for the request:
+
+- `{{ storeRequest }}` - Store request class
+- `{{ namespacedStoreRequest }}` - Store request class with namespace
+- `{{ updateRequest }}` - Update request class
+- `{{ namespacedUpdateRequest }}` - Update request class with namespace
+
+```bash
+php artisan generate:controller --model=Team --type=create Teams/CreateController
+```
+
+```php
+// generated controller
+
+class CreateController extends Controller
+{
+    /**
+     * @return Response
+     */
+    public function __invoke(): Response
+    {
+        return inertia('teams/create');
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @return RedirectResponse
+     */
+    public function store(StoreRequest $request): RedirectResponse
+    {
+        $team = Team::create($request->validated());
+
+        return to_route('teams.details', compact('team'));
+    }
+}
+```
 
 #### Generate view
 
