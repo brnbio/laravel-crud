@@ -8,6 +8,7 @@ use Brnbio\LaravelCrud\Traits\HasOptionAttributes;
 use Exception;
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand as BaseCommand;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Traits\Macroable;
 
 /**
  * Class GenerateMigrationCommand
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\File;
 class GenerateMigrationCommand extends BaseCommand
 {
     use HasOptionAttributes;
+    use Macroable;
 
     /**
      * @var string
@@ -46,7 +48,15 @@ class GenerateMigrationCommand extends BaseCommand
         $file = $this->creator->create(
             $name, $this->getMigrationPath(), $table, $create
         );
-        File::replaceInFile('{{ fields }}', $this->buildFields(), $file);
+        $replace = [
+            'fields' => $this->buildFields(),
+        ];
+        if (self::hasMacro('updateReplace')) {
+            $replace = self::updateReplace($replace);
+        }
+        foreach ($replace as $key => $value) {
+            File::replaceInFile('{{ ' . $key . ' }}', $value, $file);
+        }
 
         $this->components->info(sprintf('Migration [%s] created successfully.', $file));
     }
