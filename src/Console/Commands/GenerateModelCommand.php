@@ -7,6 +7,7 @@ namespace Brnbio\LaravelCrud\Console\Commands;
 use Brnbio\LaravelCrud\GeneratorCommand;
 use Brnbio\LaravelCrud\Traits\HasOptionAttributes;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Traits\Macroable;
 use Symfony\Component\Console\Input\InputOption;
 
 /**

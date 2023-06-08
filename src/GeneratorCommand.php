@@ -75,7 +75,15 @@ abstract class GeneratorCommand extends Command
      */
     protected function replace(string $stub, string $name): string
     {
-        foreach ($this->getReplaceItems($name) as $search => $replace) {
+        $items = $this->getReplaceItems($name);
+        if (self::hasMacro('updateReplace')) {
+            $items = array_merge(
+                $items,
+                self::updateReplace($items, $this->arguments(), $this->options())
+            );
+        }
+
+        foreach ($items as $search => $replace) {
             $stub = str_replace('{{ ' . $search . ' }}', $replace, $stub);
         }
 

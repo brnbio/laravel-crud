@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Brnbio\LaravelCrud\Console\Commands;
 
 use Brnbio\LaravelCrud\GeneratorCommand;
+use Brnbio\LaravelCrud\Traits\HasOptionAttributes;
 use Illuminate\Support\Str;
+use Illuminate\Support\Traits\Macroable;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -15,6 +17,9 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class GenerateViewCommand extends GeneratorCommand
 {
+    use HasOptionAttributes;
+    use Macroable;
+
     /**
      * @var string
      */
@@ -36,6 +41,7 @@ class GenerateViewCommand extends GeneratorCommand
     protected function getOptions(): array
     {
         return [
+            ['attributes', null, InputOption::VALUE_OPTIONAL, 'The attributes of the model'],
             ['force', null, InputOption::VALUE_NONE, 'Create the view even if already exists'],
             ['model', 'm', InputOption::VALUE_OPTIONAL, 'Generate a view for the given model'],
             ['path', null, InputOption::VALUE_OPTIONAL, 'The location where the view file should be created'],

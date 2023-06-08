@@ -69,9 +69,9 @@ class GenerateRequestCommand extends GeneratorCommand
      */
     protected function getReplaceItems(string $name): array
     {
-        $items = [
+        $items = array_merge(parent::getReplaceItems($name), [
             'rules' => $this->replaceRules($name)
-        ];
+        ]);
 
         if (self::hasMacro('updateReplace')) {
             $items = array_merge(
@@ -80,7 +80,7 @@ class GenerateRequestCommand extends GeneratorCommand
             );
         }
 
-        return array_merge(parent::getReplaceItems($name), $items);
+        return $items;
     }
 
     /**
@@ -116,9 +116,9 @@ class GenerateRequestCommand extends GeneratorCommand
     protected function getRuleType(string $type): string
     {
         return match ($type) {
-            'text' => 'string',
+            'text'     => 'string',
             'datetime' => 'date',
-            default => $type,
+            default    => $type,
         };
 
     }

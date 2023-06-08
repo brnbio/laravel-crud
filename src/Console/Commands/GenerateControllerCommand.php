@@ -16,8 +16,6 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class GenerateControllerCommand extends GeneratorCommand
 {
-    use Macroable;
-
     /**
      * @var string
      */
@@ -79,17 +77,11 @@ class GenerateControllerCommand extends GeneratorCommand
         $storeRequestClass = Str::plural($replace['model']) . '\StoreRequest';
         $updateRequestClass = Str::plural($replace['model']) . '\UpdateRequest';
 
-        $replace = array_merge($replace, [
+        return array_merge($replace, [
             'storeRequest'            => $storeRequestClass,
             'updateRequest'           => $updateRequestClass,
             'namespacedStoreRequest'  => $namespace . '\\' . $storeRequestClass,
             'namespacedUpdateRequest' => $namespace . '\\' . $updateRequestClass
         ]);
-
-        if (self::hasMacro('updateReplace')) {
-            $replace = self::updateReplace($replace, $this->arguments(), $this->options());
-        }
-
-        return $replace;
     }
 }

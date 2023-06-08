@@ -1,7 +1,3 @@
-**Cleanup** 
-- cleanup controller
-- cleanup views
-
 **Fine Tuning** 
 - add form attributes to views
 - add form elements to create/update views
