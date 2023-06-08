@@ -18,8 +18,7 @@ class {{ class }} extends Model
 {
     use HasFactory;
 
-    public const TABLE = '{{ tableName }}';
-
+    public const TABLE = '{{ table }}';
     {{ attributes }}
 
     /**

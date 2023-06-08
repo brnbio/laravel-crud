@@ -1,6 +1,4 @@
 **Cleanup** 
-- cleanup model
-- cleanup migration
 - cleanup controller
 - cleanup views
 

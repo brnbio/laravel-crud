@@ -64,11 +64,57 @@ If you want to do it manually, you can use the basic commands to generate.
 
 #### Generate model
 
-tbd
+In addition to the basic replacements, the following replacements are available for the request:
+
+- `{{ table }}` - Table name (if set by option)
+- `{{ attributes }}` - List of the attribute constants
+- `{{ fillable }}` - List of the fillable attributes
+- `{{ properties }}` - List of the properties based on the attributes for the doc block
+
+```bash
+php artisan generate:model --table teams --attributes=name:string Team
+```
+```php
+// generated fields
+
+/**
+ * Class Team
+ *
+ * @package App\Models
+ * @property string $name
+ */
+class Team extends Model
+{
+    public const TABLE = 'teams';
+    public const ATTRIBUTE_NAME = 'name';
+
+    /**
+     * @var string[]
+     */
+    protected $fillable = [
+        self::ATTRIBUTE_NAME,
+    ];
+}
+```
 
 #### Generate migration
 
-tbd
+In addition to the basic replacements, the following replacements are available for the request:
+
+- `{{ fields }}` - List of table fields based on the attributes
+
+```bash
+php artisan generate:migration --create teams --attributes=name:string CreateTeamsTable
+```
+```php
+// generated fields
+
+Schema::create('teams', function (Blueprint $table) {
+    // ...
+    $table->string('name');
+    // ...
+});
+```
 
 #### Generate controller
 

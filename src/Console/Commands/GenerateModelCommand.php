@@ -7,7 +7,6 @@ namespace Brnbio\LaravelCrud\Console\Commands;
 use Brnbio\LaravelCrud\GeneratorCommand;
 use Brnbio\LaravelCrud\Traits\HasOptionAttributes;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -35,87 +34,6 @@ class GenerateModelCommand extends GeneratorCommand
     protected $type = 'Model';
 
     /**
-     * @return false|void
-     * @throws FileNotFoundException
-     */
-    public function handle()
-    {
-        if (parent::handle() === false && !$this->option('force')) {
-            return false;
-        }
-
-        if ($this->option('factory')) {
-//            $this->createFactory();
-        }
-
-        if ($this->option('migration')) {
-            $this->createMigration();
-        }
-
-        if ($this->option('seed')) {
-//            $this->createSeeder();
-        }
-    }
-
-    /**
-     * TODO:
-     * @return void
-     */
-    protected function createFactory()
-    {
-        $factory = Str::studly($this->argument('name'));
-
-        $this->call('make:factory', [
-            'name' => "{$factory}Factory",
-            '--model' => $this->qualifyClass($this->getNameInput()),
-        ]);
-    }
-
-    /**
-     * @return void
-     */
-    protected function createMigration(): void
-    {
-        $table = $this->option('table');
-
-        $this->call('generate:migration', [
-            'name' => "create_{$table}_table",
-            '--create' => $table,
-            '--attributes' => $this->option('attributes')
-        ]);
-    }
-
-    /**
-     * TODO:
-     * @return void
-     */
-    protected function createSeeder()
-    {
-        $seeder = Str::studly(class_basename($this->argument('name')));
-
-        $this->call('make:seeder', [
-            'name' => "{$seeder}Seeder",
-        ]);
-    }
-
-    /**
-     * @return string
-     */
-    protected function getStub(): string
-    {
-        return $this->resolveStubPath('/stubs/model.stub');
-    }
-
-    /**
-     * @param $rootNamespace
-     * @return string
-     */
-    protected function getDefaultNamespace($rootNamespace): string
-    {
-        return $rootNamespace . '\\Models';
-    }
-
-    /**
      * @return array
      */
     protected function getOptions(): array
@@ -133,22 +51,95 @@ class GenerateModelCommand extends GeneratorCommand
     }
 
     /**
-     * @param $name
-     * @return string
+     * @return false|void
      * @throws FileNotFoundException
      */
-    protected function buildClass($name): string
+    public function handle()
     {
-        $stub = $this->files->get($this->getStub());
+        if (parent::handle() === false && !$this->option('force')) {
+            return false;
+        }
 
-        $stub = str_replace('{{ properties }}', $this->buildProperties(), $stub);
-        $stub = str_replace(['{{ table }}', '{{ tableName }}'], $this->option('table') ?: '', $stub);
-        $stub = str_replace('{{ attributes }}', $this->buildAttributes(), $stub);
-        $stub = str_replace('{{ fillable }}', $this->buildFillable(), $stub);
+//        if ($this->option('factory')) {
+//            $this->createFactory();
+//        }
 
-        return $this
-            ->replaceNamespace($stub, $name)
-            ->replaceClass($stub, $name);
+        if ($this->option('migration')) {
+            $this->createMigration();
+        }
+
+//        if ($this->option('seed')) {
+//            $this->createSeeder();
+//        }
+    }
+
+    /**
+     * TODO:
+     * @return void
+     */
+    protected function createFactory(): void
+    {
+//        $factory = Str::studly($this->argument('name'));
+//        $this->call('make:factory', [
+//            'name' => "{$factory}Factory",
+//            '--model' => $this->qualifyClass($this->getNameInput()),
+//        ]);
+    }
+
+    /**
+     * @return void
+     */
+    protected function createMigration(): void
+    {
+        $table = $this->option('table');
+        $this->call('generate:migration', [
+            'name'         => "create_{$table}_table",
+            '--create'     => $table,
+            '--attributes' => $this->option('attributes')
+        ]);
+    }
+
+    /**
+     * TODO:
+     * @return void
+     */
+    protected function createSeeder(): void
+    {
+//        $seeder = Str::studly(class_basename($this->argument('name')));
+//        $this->call('make:seeder', [
+//            'name' => "{$seeder}Seeder",
+//        ]);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getStub(): string
+    {
+        return $this->resolveStubPath('model.stub');
+    }
+
+    /**
+     * @param $rootNamespace
+     * @return string
+     */
+    protected function getDefaultNamespace($rootNamespace): string
+    {
+        return $rootNamespace . '\\Models';
+    }
+
+    /**
+     * @param string $name
+     * @return array
+     */
+    protected function getReplaceItems(string $name): array
+    {
+        return array_merge(parent::getReplaceItems($name), [
+            'attributes' => $this->buildAttributes(),
+            'fillable'   => $this->buildFillable(),
+            'properties' => $this->buildProperties(),
+            'table'      => $this->option('table') ?: '',
+        ]);
     }
 
     /**
@@ -179,7 +170,7 @@ class GenerateModelCommand extends GeneratorCommand
             $attributes[] = 'public const ATTRIBUTE_' . strtoupper($attribute['name']) . ' = \'' . $attribute['name'] . '\';';
         }
 
-        return implode(PHP_EOL . "\t", $attributes);
+        return implode(PHP_EOL . "    ", $attributes);
     }
 
     /**
@@ -192,6 +183,6 @@ class GenerateModelCommand extends GeneratorCommand
             $fillable[] = 'self::ATTRIBUTE_' . strtoupper($attribute['name']) . ',';
         }
 
-        return implode(PHP_EOL . "\t\t", $fillable);
+        return implode(PHP_EOL . "        ", $fillable);
     }
 }

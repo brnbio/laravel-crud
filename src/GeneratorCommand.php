@@ -53,7 +53,9 @@ abstract class GeneratorCommand extends Command
     protected function getReplaceItems(string $name): array
     {
         $class = str_replace($this->getNamespace($name) . '\\', '', $name);
-        $modelClass = $this->qualifyModel($this->option('model'));
+        $modelClass = $this->qualifyModel(
+            $this->hasOption('model') ? $this->option('model') : $name
+        );
 
         return [
             'namespace' => $this->getNamespace($name),
