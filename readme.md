@@ -157,7 +157,39 @@ class CreateController extends Controller
 
 #### Generate view
 
-tbd
+```bash
+php artisan generate:view --model Team --type create teams/create
+```
+
+```php
+// generated view
+
+<script setup>
+
+import { useForm } from '@inertiajs/inertia-vue3';
+import { provide } from 'vue';
+
+const form = useForm({
+    //
+});
+provide('form');
+
+function submit() {
+    form.submit(route('teams.create'));
+}
+
+</script>
+<template>
+
+    <form @submit.prevent="submit">
+        // ...
+        <button :disabled="form.processing">
+            Submit
+        </button>
+    </form>
+
+</template>
+```
 
 #### Generate request
 

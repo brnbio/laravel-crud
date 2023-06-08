@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Brnbio\LaravelCrud\Console\Commands;
 
 use Brnbio\LaravelCrud\GeneratorCommand;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -32,52 +31,6 @@ class GenerateViewCommand extends GeneratorCommand
     protected $type = 'View';
 
     /**
-     * @return string
-     */
-    protected function getStub(): string
-    {
-        $stub = '/stubs/view.stub';
-        if ($type = $this->option('type')) {
-            $stub = '/stubs/view.' . $type . '.stub';
-        }
-
-        return $this->resolveStubPath($stub);
-    }
-
-    /**
-     * @param $name
-     * @return string
-     * @throws FileNotFoundException
-     */
-    protected function buildClass($name): string
-    {
-        $content = $this->files->get($this->getStub());
-        $replace = $this->buildModelReplacements([]);
-
-        return str_replace(array_keys($replace), array_values($replace), $content);
-    }
-
-
-    /**
-     * @param array $replace
-     * @return array
-     */
-    protected function buildModelReplacements(array $replace): array
-    {
-        if (empty($this->option('model'))) {
-            return $replace;
-        }
-
-        $modelClass = $this->qualifyModel($this->option('model'));
-
-        return array_merge($replace, [
-            '{{ model }}' => class_basename($modelClass),
-            '{{ modelVariable }}' => lcfirst(class_basename($modelClass)),
-            '{{ modelVariablePlural }}' => lcfirst(Str::plural(class_basename($modelClass))),
-        ]);
-    }
-
-    /**
      * @return array
      */
     protected function getOptions(): array
@@ -88,6 +41,19 @@ class GenerateViewCommand extends GeneratorCommand
             ['path', null, InputOption::VALUE_OPTIONAL, 'The location where the view file should be created'],
             ['type', null, InputOption::VALUE_OPTIONAL, 'Manually specify the view stub file to use'],
         ];
+    }
+
+    /**
+     * @return string
+     */
+    protected function getStub(): string
+    {
+        $stub = 'view.stub';
+        if ($type = $this->option('type')) {
+            $stub = 'view.' . $type . '.stub';
+        }
+
+        return $this->resolveStubPath($stub);
     }
 
     /**
