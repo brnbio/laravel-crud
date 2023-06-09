@@ -1,9 +1,8 @@
 <script setup>
 
-import { useForm } from '@inertiajs/inertia-vue3';
+import { useForm, Link } from '@inertiajs/vue3';
 import { provide } from 'vue';
-import FormControl from '~/components/forms/form-control';
-import Layout from '~/layout/app';
+import FormControl       from "~/components/forms/form-control.vue";
 
 const form = useForm({
     {{ data }}
@@ -11,19 +10,20 @@ const form = useForm({
 provide('form', form);
 
 function submit() {
-    form.submit(route('{{ modelVariablePlural }}.create'));
+    form.post(route('{{ modelVariablePlural }}.create'));
 }
 
 </script>
 <template>
 
-    <Layout>
-        <form @submit.prevent="submit">
-            {{ elements }}
-            <button :disabled="form.processing">
-                Save
-            </button>
-        </form>
-    </Layout>
+    <form @submit.prevent="submit">
+        {{ elements }}
+        <button :disabled="form.processing">
+            Save
+        </button>
+        <Link :href="route('{{ modelVariablePlural }}')">
+            Cancel
+        </Link>
+    </form>
 
 </template>

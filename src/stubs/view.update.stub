@@ -1,9 +1,8 @@
 <script setup>
 
-import { useForm } from '@inertiajs/inertia-vue3';
+import { useForm, Link } from '@inertiajs/vue3';
 import { provide } from 'vue';
-import FormControl from '~/components/forms/form-control';
-import Layout from '~/layout/app';
+import FormControl       from "~/components/forms/form-control.vue";
 
 const props = defineProps({
     {{ modelVariable }}: {
@@ -18,19 +17,30 @@ const form = useForm({
 provide('form', form);
 
 function submit() {
-    form.submit(route('{{ modelVariablePlural }}.update', props.{{ modelVariable }}));
+    form.post(route('{{ modelVariablePlural }}.update', props.{{ modelVariable }}));
+}
+
+function destroy() {
+    if (confirm('Are you sure?')) {
+        form.post(route('{{ modelVariablePlural }}.delete', props.{{ modelVariable }}));
+    }
 }
 
 </script>
 <template>
 
-    <Layout>
-        <form @submit.prevent="submit">
-            {{ elements }}
-            <button :disabled="form.processing">
-                Save
-            </button>
-        </form>
-    </Layout>
+    <form @submit.prevent="submit">
+        {{ elements }}
+        <button :disabled="form.processing">
+            Save
+        </button>
+        <Link :href="route('{{ modelVariablePlural }}.details', {{ modelVariable }})">
+            Cancel
+        </Link>
+    </form>
+
+    <button @click="destroy">
+        Delete
+    </button>
 
 </template>

@@ -1,8 +1,8 @@
 <script setup>
 
-import Layout from '~/layout/app';
+import { Link } from '@inertiajs/vue3';
 
-const props = defineProps({
+defineProps({
     {{ modelVariablePlural }}: {
         type: Object,
         required: true,
@@ -12,8 +12,20 @@ const props = defineProps({
 </script>
 <template>
 
-    <Layout>
+    <Link :href="route('{{ modelVariablePlural }}.create')">
+        Create
+    </Link>
 
-    </Layout>
+    <table class="table">
+        <tbody>
+            <tr v-for="{{ modelVariable }} in {{ modelVariablePlural }}.data">
+                <td>
+                    <Link :href="route('{{ modelVariablePlural }}.details', {{ modelVariable }})">
+                        {{ {{ modelVariable }}.name }}
+                    </Link>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
 </template>

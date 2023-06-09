@@ -23,7 +23,7 @@ class {{ class }} extends Controller
      */
     public function __invoke({{ model }} ${{ modelVariable }}): Response
     {
-        return inertia('{{ modelVariablePlural }}.update', compact('{{ modelVariable }}'));
+        return inertia('{{ modelVariablePlural }}/update', compact('{{ modelVariable }}'));
     }
 
     /**
@@ -36,6 +36,6 @@ class {{ class }} extends Controller
         ${{ modelVariable }}->update($request->validated());
         flash()->success('{{ model }} gespeichert.');
 
-        return to_route('{{ modelVariablePlural }}/details', compact('{{ modelVariable }}'));
+        return to_route('{{ modelVariablePlural }}.details', compact('{{ modelVariable }}'));
     }
 }

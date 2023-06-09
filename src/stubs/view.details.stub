@@ -1,8 +1,8 @@
 <script setup>
 
-import Layout from '~/layout/app';
+import { Link } from '@inertiajs/vue3';
 
-const props = defineProps({
+defineProps({
     {{ modelVariable }}: {
         type: Object,
         required: true,
@@ -12,8 +12,14 @@ const props = defineProps({
 </script>
 <template>
 
-    <Layout>
+    <Link :href="route('{{ modelVariablePlural }}')">
+        All teams
+    </Link>
 
-    </Layout>
+    <Link :href="route('{{ modelVariablePlural }}.update', {{ modelVariable }})">
+        Update
+    </Link>
+
+    {{ {{ modelVariable }} }}
 
 </template>
