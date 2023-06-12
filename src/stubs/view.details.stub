@@ -12,11 +12,11 @@ defineProps({
 </script>
 <template>
 
-    <Link :href="route('{{ modelVariablePlural }}')">
+    <Link :href="route('{{ module }}{{ modelVariablePlural }}')">
         All teams
     </Link>
 
-    <Link :href="route('{{ modelVariablePlural }}.update', {{ modelVariable }})">
+    <Link :href="route('{{ module }}{{ modelVariablePlural }}.update', {{ modelVariable }})">
         Update
     </Link>
 

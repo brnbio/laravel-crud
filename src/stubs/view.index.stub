@@ -12,7 +12,7 @@ defineProps({
 </script>
 <template>
 
-    <Link :href="route('{{ modelVariablePlural }}.create')">
+    <Link :href="route('{{ module }}{{ modelVariablePlural }}.create')">
         Create
     </Link>
 
@@ -20,7 +20,7 @@ defineProps({
         <tbody>
             <tr v-for="{{ modelVariable }} in {{ modelVariablePlural }}.data">
                 <td>
-                    <Link :href="route('{{ modelVariablePlural }}.details', {{ modelVariable }})">
+                    <Link :href="route('{{ module }}{{ modelVariablePlural }}.details', {{ modelVariable }})">
                         {{ {{ modelVariable }}.name }}
                     </Link>
                 </td>

@@ -56,10 +56,9 @@ abstract class GeneratorCommand extends Command
         $modelClass = $this->qualifyModel(
             $this->hasOption('model') ? $this->option('model') : $name
         );
-        $namespace = $this->getNamespace($name);
 
         return [
-            'namespace'           => $namespace,
+            'namespace'           => $this->getNamespace($name),
             'rootNamespace'       => $this->rootNamespace(),
             'class'               => $class,
             'namespacedModel'     => $modelClass,

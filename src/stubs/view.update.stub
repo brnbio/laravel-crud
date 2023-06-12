@@ -17,12 +17,12 @@ const form = useForm({
 provide('form', form);
 
 function submit() {
-    form.post(route('{{ modelVariablePlural }}.update', props.{{ modelVariable }}));
+    form.post(route('{{ module }}{{ modelVariablePlural }}.update', props.{{ modelVariable }}));
 }
 
 function destroy() {
     if (confirm('Are you sure?')) {
-        form.post(route('{{ modelVariablePlural }}.delete', props.{{ modelVariable }}));
+        form.post(route('{{ module }}{{ modelVariablePlural }}.delete', props.{{ modelVariable }}));
     }
 }
 

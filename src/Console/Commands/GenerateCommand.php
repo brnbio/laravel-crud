@@ -45,7 +45,6 @@ class GenerateCommand extends Command
             '--migration'  => true,
             '--attributes' => $this->option('attributes'),
             '--table'      => $this->option('table'),
-            '--namespace'  => $this->option('namespace'),
         ]);
 
         foreach (['store', 'update'] as $action) {
@@ -54,16 +53,14 @@ class GenerateCommand extends Command
                 'name'         => $requestClass,
                 '--model'      => $model,
                 '--attributes' => $this->option('attributes'),
-                '--namespace'  => $this->option('namespace'),
             ]);
         }
 
         foreach (['create', 'read', 'update', 'delete'] as $action) {
             $this->call('generate:controller', [
-                'name'        => $modelPlural . '/' . ucfirst($action) . 'Controller',
-                '--model'     => $model,
-                '--type'      => $action,
-                '--namespace' => $this->option('namespace'),
+                'name'    => $modelPlural . '/' . ucfirst($action) . 'Controller',
+                '--model' => $model,
+                '--type'  => $action,
             ]);
         }
 
@@ -90,8 +87,9 @@ class GenerateCommand extends Command
     public function call($command, array $arguments = []): int
     {
         $arguments = array_merge([
-            '--path'  => $this->option('path'),
-            '--force' => $this->option('force')
+            '--namespace' => $this->option('namespace'),
+            '--path'      => $this->option('path'),
+            '--force'     => $this->option('force')
         ], $arguments);
 
         return parent::call($command, $arguments);

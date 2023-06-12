@@ -44,6 +44,7 @@ class GenerateViewCommand extends GeneratorCommand
             ['attributes', null, InputOption::VALUE_OPTIONAL, 'The attributes of the model'],
             ['force', null, InputOption::VALUE_NONE, 'Create the view even if already exists'],
             ['model', 'm', InputOption::VALUE_OPTIONAL, 'Generate a view for the given model'],
+            ['namespace', null, InputOption::VALUE_OPTIONAL, 'The root namespace for the view'],
             ['path', null, InputOption::VALUE_OPTIONAL, 'The location where the view file should be created'],
             ['type', null, InputOption::VALUE_OPTIONAL, 'Manually specify the view stub file to use'],
         ];
@@ -83,8 +84,13 @@ class GenerateViewCommand extends GeneratorCommand
     protected function getReplaceItems(string $name): array
     {
         $replace = parent::getReplaceItems($name);
+        $module = '';
+        if ($replace['rootNamespace'] !== 'App\\') {
+            $module = str($replace['rootNamespace'])->replace('\\', '')->lower()->__toString();
+        }
 
         return array_merge($replace, [
+            'module'   => $module ? $module . '.' : '',
             'data'     => $this->buildData($replace['modelVariable']),
             'elements' => $this->buildElements(),
         ]);
@@ -123,6 +129,6 @@ class GenerateViewCommand extends GeneratorCommand
             );
         }
 
-        return implode(PHP_EOL . str_repeat(' ', 12), $elements);
+        return implode(PHP_EOL . str_repeat(' ', 8), $elements);
     }
 }

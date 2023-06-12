@@ -10,7 +10,7 @@ const form = useForm({
 provide('form', form);
 
 function submit() {
-    form.post(route('{{ modelVariablePlural }}.create'));
+    form.post(route('{{ module }}{{ modelVariablePlural }}.create'));
 }
 
 </script>
@@ -21,7 +21,7 @@ function submit() {
         <button :disabled="form.processing">
             Save
         </button>
-        <Link :href="route('{{ modelVariablePlural }}')">
+        <Link :href="route('{{ module }}{{ modelVariablePlural }}')">
             Cancel
         </Link>
     </form>
