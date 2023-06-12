@@ -24,6 +24,6 @@ class {{ class }} extends Controller
         ${{ modelVariable }}->delete();
         flash()->success('{{ model }} gelöscht.');
 
-        return to_route('{{ modelVariablePlural }}');
+        return to_route('{{ routePrefix }}{{ modelVariablePlural }}');
     }
 }

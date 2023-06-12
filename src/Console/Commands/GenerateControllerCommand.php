@@ -72,11 +72,18 @@ class GenerateControllerCommand extends GeneratorCommand
     protected function getReplaceItems(string $name): array
     {
         $replace = parent::getReplaceItems($name);
-        $namespace = $this->rootNamespace() . 'Http\Requests\\';
+        
+        $namespace = $replace['rootNamespace'] . 'Http\Requests\\';
         $storeRequestClass = Str::plural($replace['model']) . '\StoreRequest';
         $updateRequestClass = Str::plural($replace['model']) . '\UpdateRequest';
+        $module = '';
+        if ($replace['rootNamespace'] !== 'App\\') {
+            $module = str($replace['rootNamespace'])->replace('\\', '')->lower()->__toString();
+        }
 
         return array_merge($replace, [
+            'routePrefix'             => $module ? $module . '.' : '',
+            'viewPrefix'              => $module ? $module . '::' : '',
             'storeRequest'            => $storeRequestClass,
             'updateRequest'           => $updateRequestClass,
             'namespacedStoreRequest'  => $namespace . $storeRequestClass,

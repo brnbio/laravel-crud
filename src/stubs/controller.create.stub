@@ -22,7 +22,7 @@ class {{ class }} extends Controller
      */
     public function __invoke(): Response
     {
-        return inertia('{{ modelVariablePlural }}/create');
+        return inertia('{{ viewPrefix }}{{ modelVariablePlural }}/create');
     }
 
     /**
@@ -34,6 +34,6 @@ class {{ class }} extends Controller
         ${{ modelVariable }} = {{ model }}::create($request->validated());
         flash()->success('{{ model }} gespeichert.');
 
-        return to_route('{{ modelVariablePlural }}.details', compact('{{ modelVariable }}'));
+        return to_route('{{ routePrefix }}{{ modelVariablePlural }}.details', compact('{{ modelVariable }}'));
     }
 }

@@ -13,7 +13,7 @@ defineProps({
 <template>
 
     <Link :href="route('{{ module }}{{ modelVariablePlural }}')">
-        All teams
+        All items
     </Link>
 
     <Link :href="route('{{ module }}{{ modelVariablePlural }}.update', {{ modelVariable }})">

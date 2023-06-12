@@ -34,7 +34,7 @@ function destroy() {
         <button :disabled="form.processing">
             Save
         </button>
-        <Link :href="route('{{ modelVariablePlural }}.details', {{ modelVariable }})">
+        <Link :href="route('{{ module }}{{ modelVariablePlural }}.details', {{ modelVariable }})">
             Cancel
         </Link>
     </form>
