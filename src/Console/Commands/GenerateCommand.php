@@ -23,6 +23,8 @@ class GenerateCommand extends Command
     protected $signature = 'generate {name}
         { --table= : The table to be created }
         { --attributes= : The attributes of the model }
+        { --namespace= : The root namespace }
+        { --path= : Root path of the files }
         { --force : Create the files even if they already exists }';
 
     /**
@@ -39,41 +41,59 @@ class GenerateCommand extends Command
         $modelPlural = Str::plural($model);
 
         $this->call('generate:model', [
-            'name' => $model,
-            '--migration' => true,
+            'name'         => $model,
+            '--migration'  => true,
             '--attributes' => $this->option('attributes'),
-            '--table' => $this->option('table'),
-            '--force' => $this->option('force')
+            '--table'      => $this->option('table'),
+            '--namespace'  => $this->option('namespace'),
         ]);
 
         foreach (['store', 'update'] as $action) {
             $requestClass = $modelPlural . '\\' . ucfirst($action) . 'Request';
             $this->call('generate:request', [
-                'name' => $requestClass,
-                '--model' => $model,
+                'name'         => $requestClass,
+                '--model'      => $model,
                 '--attributes' => $this->option('attributes'),
-                '--force' => $this->option('force')
+                '--namespace'  => $this->option('namespace'),
             ]);
         }
 
         foreach (['create', 'read', 'update', 'delete'] as $action) {
             $this->call('generate:controller', [
-                'name' => $modelPlural . '/' . ucfirst($action) . 'Controller',
-                '--model' => $model,
-                '--type' => $action,
-                '--force' => $this->option('force')
+                'name'        => $modelPlural . '/' . ucfirst($action) . 'Controller',
+                '--model'     => $model,
+                '--type'      => $action,
+                '--namespace' => $this->option('namespace'),
             ]);
         }
 
         foreach (['index', 'details', 'create', 'update'] as $action) {
+            $path = 'resources/js/views';
+            if ($this->option('path')) {
+                $path = $this->option('path') . '/' . $path;
+            }
             $this->call('generate:view', [
-                'name' => strtolower($modelPlural) . '/' . $action,
+                'name'         => strtolower($modelPlural) . '/' . $action,
                 '--attributes' => $this->option('attributes'),
-                '--model' => $model,
-                '--type' => $action,
-                '--path' => 'resources/js/views',
-                '--force' => $this->option('force')
+                '--model'      => $model,
+                '--type'       => $action,
+                '--path'       => $path,
             ]);
         }
+    }
+
+    /**
+     * @param string $command
+     * @param array $arguments
+     * @return int
+     */
+    public function call($command, array $arguments = []): int
+    {
+        $arguments = array_merge([
+            '--path'  => $this->option('path'),
+            '--force' => $this->option('force')
+        ], $arguments);
+
+        return parent::call($command, $arguments);
     }
 }

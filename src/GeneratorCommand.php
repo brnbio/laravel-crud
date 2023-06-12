@@ -40,7 +40,7 @@ abstract class GeneratorCommand extends Command
     protected function rootNamespace(): string
     {
         if ($this->hasOption('namespace') && !empty($customNamespace = $this->option('namespace'))) {
-            return explode('\\', $customNamespace)[0];
+            return explode('\\', $customNamespace)[0] . '\\';
         }
 
         return parent::rootNamespace();
@@ -56,14 +56,15 @@ abstract class GeneratorCommand extends Command
         $modelClass = $this->qualifyModel(
             $this->hasOption('model') ? $this->option('model') : $name
         );
+        $namespace = $this->getNamespace($name);
 
         return [
-            'namespace' => $this->getNamespace($name),
-            'rootNamespace' => $this->rootNamespace(),
-            'class' => $class,
-            'namespacedModel' => $modelClass,
-            'model' => class_basename($modelClass),
-            'modelVariable' => lcfirst(class_basename($modelClass)),
+            'namespace'           => $namespace,
+            'rootNamespace'       => $this->rootNamespace(),
+            'class'               => $class,
+            'namespacedModel'     => $modelClass,
+            'model'               => class_basename($modelClass),
+            'modelVariable'       => lcfirst(class_basename($modelClass)),
             'modelVariablePlural' => lcfirst(Str::plural(class_basename($modelClass))),
         ];
     }
@@ -100,5 +101,19 @@ abstract class GeneratorCommand extends Command
         $stub = $this->files->get($this->getStub());
 
         return $this->replace($stub, $name);
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    protected function getPath($name): string
+    {
+        $name = Str::replaceFirst($this->rootNamespace(), '', $name);
+        if ($path = $this->option('path')) {
+            return $path . '/app/' . str_replace('\\', '/', $name) . '.php';
+        }
+
+        return parent::getPath($name);
     }
 }

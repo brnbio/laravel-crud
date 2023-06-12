@@ -6,7 +6,6 @@ namespace Brnbio\LaravelCrud\Console\Commands;
 
 use Brnbio\LaravelCrud\GeneratorCommand;
 use Illuminate\Support\Str;
-use Illuminate\Support\Traits\Macroable;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -73,15 +72,15 @@ class GenerateControllerCommand extends GeneratorCommand
     protected function getReplaceItems(string $name): array
     {
         $replace = parent::getReplaceItems($name);
-        $namespace = $this->rootNamespace() . 'Http\Requests';
+        $namespace = $this->rootNamespace() . 'Http\Requests\\';
         $storeRequestClass = Str::plural($replace['model']) . '\StoreRequest';
         $updateRequestClass = Str::plural($replace['model']) . '\UpdateRequest';
 
         return array_merge($replace, [
             'storeRequest'            => $storeRequestClass,
             'updateRequest'           => $updateRequestClass,
-            'namespacedStoreRequest'  => $namespace . '\\' . $storeRequestClass,
-            'namespacedUpdateRequest' => $namespace . '\\' . $updateRequestClass
+            'namespacedStoreRequest'  => $namespace . $storeRequestClass,
+            'namespacedUpdateRequest' => $namespace . $updateRequestClass
         ]);
     }
 }

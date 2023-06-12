@@ -96,7 +96,8 @@ class GenerateModelCommand extends GeneratorCommand
         $this->call('generate:migration', [
             'name'         => "create_{$table}_table",
             '--create'     => $table,
-            '--attributes' => $this->option('attributes')
+            '--attributes' => $this->option('attributes'),
+            '--path'       => $this->option('path') . '/database/migrations',
         ]);
     }
 
