@@ -36,5 +36,9 @@ class LaravelCrudServiceProvider extends ServiceProvider
             GenerateViewCommand::class,
             GenerateCommand::class,
         ]);
+
+        $this->publishes([
+            __DIR__ . '/stubs' => base_path('stubs'),
+        ], 'laravel-crud-stubs');
     }
 }
