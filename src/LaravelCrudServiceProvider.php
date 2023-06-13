@@ -6,6 +6,7 @@ namespace Brnbio\LaravelCrud;
 
 use Brnbio\LaravelCrud\Console\Commands\GenerateCommand;
 use Brnbio\LaravelCrud\Console\Commands\GenerateControllerCommand;
+use Brnbio\LaravelCrud\Console\Commands\GenerateFactoryCommand;
 use Brnbio\LaravelCrud\Console\Commands\GenerateMigrationCommand;
 use Brnbio\LaravelCrud\Console\Commands\GenerateModelCommand;
 use Brnbio\LaravelCrud\Console\Commands\GenerateRequestCommand;
@@ -34,6 +35,7 @@ class LaravelCrudServiceProvider extends ServiceProvider
             GenerateControllerCommand::class,
             GenerateRequestCommand::class,
             GenerateViewCommand::class,
+            GenerateFactoryCommand::class,
             GenerateCommand::class,
         ]);
 
