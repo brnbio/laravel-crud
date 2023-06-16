@@ -23,7 +23,7 @@ class GenerateViewCommand extends GeneratorCommand
     /**
      * @var string
      */
-    protected $name = 'generate:view';
+    protected $name = 'code:generate:view';
 
     /**
      * @var string

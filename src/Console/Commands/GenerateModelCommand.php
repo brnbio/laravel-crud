@@ -22,7 +22,7 @@ class GenerateModelCommand extends GeneratorCommand
     /**
      * @var string
      */
-    protected $name = 'generate:model';
+    protected $name = 'code:generate:model';
 
     /**
      * @var string
@@ -93,7 +93,7 @@ class GenerateModelCommand extends GeneratorCommand
     protected function createMigration(): void
     {
         $table = $this->option('table');
-        $this->call('generate:migration', [
+        $this->call('code:generate:migration', [
             'name'         => "create_{$table}_table",
             '--create'     => $table,
             '--attributes' => $this->option('attributes'),

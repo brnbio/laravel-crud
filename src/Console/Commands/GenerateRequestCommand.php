@@ -20,7 +20,7 @@ class GenerateRequestCommand extends GeneratorCommand
     /**
      * @var string
      */
-    protected $name = 'generate:request';
+    protected $name = 'code:generate:request';
 
     /**
      * @var string

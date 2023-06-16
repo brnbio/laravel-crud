@@ -21,7 +21,7 @@ class GenerateFactoryCommand extends GeneratorCommand
     /**
      * @var string
      */
-    protected $name = 'generate:factory';
+    protected $name = 'code:generate:factory';
 
     /**
      * @var string

@@ -23,7 +23,7 @@ class GenerateMigrationCommand extends BaseCommand
     /**
      * @var string
      */
-    protected $signature = 'generate:migration
+    protected $signature = 'code:generate:migration
         {name : The name of the migration}
         {--attributes= : The attributes of the migration}
         {--create=     : The table to be created}

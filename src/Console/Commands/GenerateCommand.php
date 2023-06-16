@@ -20,7 +20,7 @@ class GenerateCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'generate {name}
+    protected $signature = 'code:generate {name}
         { --table= : The table to be created }
         { --attributes= : The attributes of the model }
         { --namespace= : The root namespace }
@@ -40,7 +40,7 @@ class GenerateCommand extends Command
         $model = $this->argument('name');
         $modelPlural = Str::plural($model);
 
-        $this->call('generate:model', [
+        $this->call('code:generate:model', [
             'name'         => $model,
             '--migration'  => true,
             '--attributes' => $this->option('attributes'),
@@ -49,7 +49,7 @@ class GenerateCommand extends Command
 
         foreach (['store', 'update'] as $action) {
             $requestClass = $modelPlural . '\\' . ucfirst($action) . 'Request';
-            $this->call('generate:request', [
+            $this->call('code:generate:request', [
                 'name'         => $requestClass,
                 '--model'      => $model,
                 '--attributes' => $this->option('attributes'),
@@ -57,7 +57,7 @@ class GenerateCommand extends Command
         }
 
         foreach (['create', 'read', 'update', 'delete'] as $action) {
-            $this->call('generate:controller', [
+            $this->call('code:generate:controller', [
                 'name'    => $modelPlural . '/' . ucfirst($action) . 'Controller',
                 '--model' => $model,
                 '--type'  => $action,
@@ -69,7 +69,7 @@ class GenerateCommand extends Command
             if ($this->option('path')) {
                 $path = $this->option('path') . '/' . $path;
             }
-            $this->call('generate:view', [
+            $this->call('code:generate:view', [
                 'name'         => strtolower($modelPlural) . '/' . $action,
                 '--attributes' => $this->option('attributes'),
                 '--model'      => $model,
