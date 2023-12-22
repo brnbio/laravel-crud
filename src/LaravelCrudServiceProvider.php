@@ -12,6 +12,7 @@ use Brnbio\LaravelCrud\Console\Commands\GenerateModelCommand;
 use Brnbio\LaravelCrud\Console\Commands\GenerateRequestCommand;
 use Brnbio\LaravelCrud\Console\Commands\GenerateViewCommand;
 use Brnbio\LaravelCrud\Console\Commands\RefactorCommand;
+use Brnbio\LaravelCrud\Console\Commands\RefactorTableCommand;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -38,6 +39,7 @@ class LaravelCrudServiceProvider extends ServiceProvider
             GenerateViewCommand::class,
             GenerateFactoryCommand::class,
             GenerateCommand::class,
+            RefactorTableCommand::class,
             RefactorCommand::class,
         ]);
 

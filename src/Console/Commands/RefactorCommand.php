@@ -5,35 +5,34 @@ declare(strict_types=1);
 namespace Brnbio\LaravelCrud\Console\Commands;
 
 use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\Schema\Column;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\NoReturn;
 
 /**
- * Class GenerateCommand
+ * Class RefactorCommand
  *
  * @package Brnbio\LaravelCrud\Console\Commands
  */
 class RefactorCommand extends Command
 {
-    public const COLUMNS_BLACKLIST = [
-        'id',
-        'uuid',
-        'created_at',
-        'updated_at',
-        'deleted_at',
+    public const TABLES_BLACKLIST = [
+        'failed_jobs',
+        'media',
+        'migrations',
+        'password_resets',
+        'personal_access_tokens',
     ];
 
     /**
      * @var string
      */
-    protected $signature = 'code:refactor {name} { --table=}';
+    protected $signature = 'code:refactor';
 
     /**
      * @var string
      */
-    protected $description = 'Generate crud from given table';
+    protected $description = 'Generate all from existing database';
 
     /**
      * @return void
@@ -41,28 +40,16 @@ class RefactorCommand extends Command
      */
     #[NoReturn] public function handle(): void
     {
-        $name = $this->argument('name');
-        $table = $this->option('table');
-
-        if (DB::table($table)->exists()) {
-            $schema = DB::connection()->getDoctrineSchemaManager();
-            $columns = $schema->listTableColumns($table);
-            $attributes = collect($columns)
-                ->filter(function (Column $column) {
-                    return !in_array($column->getName(), self::COLUMNS_BLACKLIST);
-                })
-                ->map(function (Column $column) {
-                    return implode(':', array_filter([
-                        $column->getName(),
-                        $column->getType()->getName(),
-                        $column->getNotnull() ? null : 'true',
-                    ]));
-                })
-                ->implode(',');
-            $this->call('code:generate', [
-                'name'         => $name,
-                '--attributes' => $attributes,
-                '--table'      => $table,
+        $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
+        foreach ($tables as $table) {
+            if (in_array($table, self::TABLES_BLACKLIST, true)) {
+                continue;
+            }
+            $model = str($table)->singular()->title()->toString();
+            $this->info('Generating ' . $model . '...');
+            $this->call('code:refactor-table', [
+                'name'    => $model,
+                '--table' => $table,
             ]);
         }
     }
