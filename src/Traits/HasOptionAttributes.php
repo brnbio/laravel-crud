@@ -36,7 +36,7 @@ trait HasOptionAttributes
             'name' => $attribute[0],
             'type' => $attribute[1] ?? 'string',
             'attributeType' => $this->getAttributeType($attribute[1] ?? 'string'),
-            'nullable' => $attribute[2] ?? false,
+            'nullable' => boolval($attribute[2] ?? false),
         ];
     }
 

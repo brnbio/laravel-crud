@@ -11,6 +11,7 @@ use Brnbio\LaravelCrud\Console\Commands\GenerateMigrationCommand;
 use Brnbio\LaravelCrud\Console\Commands\GenerateModelCommand;
 use Brnbio\LaravelCrud\Console\Commands\GenerateRequestCommand;
 use Brnbio\LaravelCrud\Console\Commands\GenerateViewCommand;
+use Brnbio\LaravelCrud\Console\Commands\RefactorCommand;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -37,6 +38,7 @@ class LaravelCrudServiceProvider extends ServiceProvider
             GenerateViewCommand::class,
             GenerateFactoryCommand::class,
             GenerateCommand::class,
+            RefactorCommand::class,
         ]);
 
         $this->publishes([
